@@ -1,11 +1,11 @@
 from modelFactory.factory import Gemini_Model_Factory
-from agents.prompting import Prompting
+from agents.prompting_pydantic import PydanticPrompting
 
 def main():
     model = Gemini_Model_Factory().create_model("GEMINI_2.5_FLASH_MODEL")
-    prompt = Prompting(model)
-    prompt.template_prompting()
-            
+    agent = PydanticPrompting(model)
+    agent.pydantic_schema()
+    
 if __name__ == "__main__":
     try:
         print("👋🏻 starting")

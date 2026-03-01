@@ -27,8 +27,8 @@ class Gemini_Model_Factory(ModelFactory):
         )
         
         # Add automatic retry logic with exponential backoff
-        model_with_retry = llm_model.with_retry(stop_after_attempt=3) # will retry up to 3 times
-        return model_with_retry
+        # model_with_retry = llm_model.with_retry(stop_after_attempt=3) # will retry up to 3 times
+        return llm_model
     
     
 class ChatModel(ModelFactory):

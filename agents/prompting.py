@@ -1,6 +1,6 @@
 from typing import List
 from langchain_core.messages import HumanMessage,SystemMessage,AIMessage,BaseMessage
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate,PromptTemplate,FewShotChatMessagePromptTemplate
 #for agents
 class Prompting:
       def __init__(self,model):
@@ -46,3 +46,72 @@ class Prompting:
             })
             
             print("Telugu:", result.content)
+            
+      # PromptTemplate - for simple single prompts
+      def template_prompting2(self):
+            simple_template = PromptTemplate.from_template(
+                  "Answer this {topic} question briefly: {question}"
+            )
+            simple_chain = simple_template | self.model 
+            result = simple_chain.invoke(
+                  {"topic":"science",
+                   "question":"Are trees living beings?"
+                  }
+            )
+            print("PromptTemplate:", result.content)
+
+
+      # Few-Shot Prompting with Templates
+      def template_prompting3(self):
+            examples = [
+                  {"input": "happy", "output": "😊"},
+                  {"input": "sad", "output": "😢"},
+                  {"input": "excited", "output": "🎉"},
+            ]
+            
+            example_template = ChatPromptTemplate.from_messages(
+                  ("human","{input}"),
+                  ("ai", "{output}"), 
+            )
+            
+            
+            few_shot_template = FewShotChatMessagePromptTemplate(
+                  example_prompt=example_template,
+                  examples=examples,
+            )
+      
+            final_template = ChatPromptTemplate.from_messages([
+                  ("system", "you are an emoji translator. Convert words to emojis."),
+                  few_shot_template,
+                  ("human","{input}")
+            ])
+            
+            chain = final_template | self.model
+            
+            for word in ["angry", "love", "confused"]:
+                  result = chain.invoke({"input": word})
+                  print(f"{word} → {result.content}")
+      #  Template Composition
+      def template_prompting4(self):
+            base_instructions = """You are a {role} assistant.
+            Your communication style is {style}. Always be helpful and professional."""
+            
+            educator_template = ChatPromptTemplate.from_messages([
+                  ("system", base_instructions),
+                  ("system", "Focus on teaching concepts clearly with examples."),
+                  ("human", "{question}"),
+            ])
+            
+            support_template = ChatPromptTemplate.from_messages([
+                  ("system", base_instructions),
+                  ("system", "Focus on solving problems efficiently."),
+                  ("human", "{question}"),
+            ])
+            
+            educator_chain = educator_template | self.model
+            result = educator_chain.invoke({
+                  "role": "Python programming",
+                  "style": "friendly and encouraging",
+                  "question": "What is a list comprehension?",
+            })
+            print(result.content)
