@@ -1,11 +1,21 @@
 from modelFactory.factory import Gemini_Model_Factory
-from chat_model import ChatModel
+from agents.prompting import Prompting
 
 def main():
     model = Gemini_Model_Factory().create_model("GEMINI_2.5_FLASH_MODEL")
-    # response = model.invoke("Hello, how are you?")
-    # print(response.content)
-    ChatModel(model,"you are a helpful assitant")
-    
+    prompt = Prompting(model)
+    prompt.template_prompting()
+            
 if __name__ == "__main__":
-    main()
+    try:
+        print("👋🏻 starting")
+        main()
+        print("🙋🏻‍♂️ finishing")
+    except Exception as error:
+        error_msg = str(error)
+        if "429" in error_msg:
+            print("\n💡 Rate limit hit. Try again in a few moments.")
+        elif "401" in error_msg:
+            print("\n💡 Check your API key in .env file")
+        else:
+            print(f"\nAn error occurred: {error_msg}")

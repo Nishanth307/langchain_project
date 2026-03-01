@@ -34,7 +34,8 @@ class Gemini_Model_Factory(ModelFactory):
 class ChatModel(ModelFactory):
     
     def createModel(self, model_name:str):
-        chatModel = init_chat_model(model_name)
+        # chatModel = init_chat_model(model_name)
+        pass
 
 # 💡 General Temperature Guidelines:
 #    - Lower values (0-0.3): More deterministic, consistent responses

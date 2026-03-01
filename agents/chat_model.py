@@ -21,14 +21,7 @@ class ChatModel:
                   raise ValueError(f"Invalid role: {role}")
       
       def get_reply(self):
-            try:
-                  return self.model.invoke(self.messages)
-            except Exception as error:
-                  error_msg = str(error)
-                  if "429" in error_msg:
-                        print("\n💡 Rate limit hit. Try again in a few moments.")
-                  elif "401" in error_msg:
-                        print("\n💡 Check your API key in .env file")
+            return self.model.invoke(self.messages)
 
       def take_input_messages(self):
             print("🤖 Hi I am a chatbot. How can I help you today?")
@@ -48,7 +41,7 @@ class ChatModel:
                   if hasattr(chunk, "content") and chunk.content:
                         response_content += chunk.content
                         print(chunk.content, end="", flush=True)
-            print("\n\n✅ Stream complete!")
+            print()
             return response_content
       
 
